@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Violão Para Iniciantes</title>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJQTWDNTWG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-TJQTWDNTWG');
+
+      // Captura e persiste UTMs da URL no localStorage
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        ['utm_source','utm_medium','utm_campaign'].forEach(function(k) {
+          var v = params.get(k);
+          if (v) localStorage.setItem(k, v);
+        });
+      })();
+    </script>
+  <script>
+    window.addEventListener('load', function(){
+      document.addEventListener('click', function(e){
+        const el = e.target.closest('a, button');
+        if(!el) return;
+
+        const link = el.href || '';
+        const texto = (el.innerText || '').toLowerCase();
+
+        if(
+          link.includes('pay.hotmart.com') ||
+          texto.includes('liberar meu acesso')
+        ){
+          gtag('event','click_compra',{
+            utm_source: localStorage.getItem('utm_source'),
+            utm_medium: localStorage.getItem('utm_medium'),
+            utm_campaign: localStorage.getItem('utm_campaign'),
+            checkout_url: link,
+            page_location: window.location.href,
+            page_title: document.title
+          });
+
+          // pequeno delay para garantir envio antes do redirecionamento
+          e.preventDefault();
+          setTimeout(function(){
+            window.location.href = link;
+          },300);
+        }
+      });
+    });
+  </script>
+    <script type="module" crossorigin src="/assets/index-D08wOMun.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BHEH-Jtw.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
