@@ -6,58 +6,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     <title>Violão Para Iniciantes</title>
+
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJQTWDNTWG"></script>
+
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-TJQTWDNTWG');
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
+      gtag("js", new Date());
+      gtag("config", "G-TJQTWDNTWG");
 
       // Captura e persiste UTMs da URL no localStorage
-      (function() {
+      (function () {
         var params = new URLSearchParams(window.location.search);
-        ['utm_source','utm_medium','utm_campaign'].forEach(function(k) {
+
+        ["utm_source", "utm_medium", "utm_campaign"].forEach(function (k) {
           var v = params.get(k);
           if (v) localStorage.setItem(k, v);
         });
       })();
     </script>
-  <script>
-    window.addEventListener('load', function(){
-      document.addEventListener('click', function(e){
-        const el = e.target.closest('a, button');
-        if(!el) return;
 
-        const link = el.href || '';
-        const texto = (el.innerText || '').toLowerCase();
+    <script>
+      window.addEventListener("load", function () {
+        document.addEventListener("click", function (e) {
+          const el = e.target.closest("a, button");
+          if (!el) return;
 
-        if(
-          link.includes('pay.hotmart.com') ||
-          texto.includes('liberar meu acesso')
-        ){
-          gtag('event','click_compra',{
-            utm_source: localStorage.getItem('utm_source'),
-            utm_medium: localStorage.getItem('utm_medium'),
-            utm_campaign: localStorage.getItem('utm_campaign'),
-            checkout_url: link,
-            page_location: window.location.href,
-            page_title: document.title
-          });
+          const link = el.href || "";
+          const texto = (el.innerText || "").toLowerCase();
 
-          // pequeno delay para garantir envio antes do redirecionamento
-          e.preventDefault();
-          setTimeout(function(){
-            window.location.href = link;
-          },300);
-        }
+          if (
+            link.includes("pay.hotmart.com") ||
+            texto.includes("liberar meu acesso")
+          ) {
+            gtag("event", "click_compra", {
+              utm_source: localStorage.getItem("utm_source"),
+              utm_medium: localStorage.getItem("utm_medium"),
+              utm_campaign: localStorage.getItem("utm_campaign"),
+              checkout_url: link,
+              page_location: window.location.href,
+              page_title: document.title,
+            });
+
+            e.preventDefault();
+
+            setTimeout(function () {
+              window.location.href = link;
+            }, 300);
+          }
+        });
       });
-    });
-  </script>
-    <script type="module" crossorigin src="/assets/index-aHyroNas.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BHEH-Jtw.css">
+    </script>
+    <script type="module" crossorigin src="/assets/index-CbcUZiO5.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DeIX1hUk.css">
   </head>
+
   <body>
-    <div id="root"></div>
+    <!-- Barra de promoção -->
+    <div id="promo-bar">
+      ÚLTIMAS HORAS: Essa oferta encerra em
+      <span id="countdown">23:59:59</span>
+    </div>
+
+    <div id="root"></div>
+
+
+    <script>
+      function startPersistentCountdown() {
+        const countdownEl = document.getElementById("countdown");
+
+        // chave salva no navegador
+        const storageKey = "promo_end_time";
+
+        // tempo atual
+        const now = new Date().getTime();
+
+        // tenta recuperar o tempo salvo
+        let endTime = localStorage.getItem(storageKey);
+
+        // se não existir ou já expirou, cria novo de 24h
+        if (!endTime || now > parseInt(endTime)) {
+          endTime = now + 24 * 60 * 60 * 1000; // 24 horas
+          localStorage.setItem(storageKey, endTime);
+        }
+
+        function updateCountdown() {
+          const currentTime = new Date().getTime();
+          const distance = endTime - currentTime;
+
+          // se acabou, reinicia automaticamente mais 24h
+          if (distance <= 0) {
+            const newEndTime = currentTime + 24 * 60 * 60 * 1000;
+            localStorage.setItem(storageKey, newEndTime);
+            endTime = newEndTime;
+            return;
+          }
+
+          const hours = Math.floor(
+            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+
+          const minutes = Math.floor(
+            (distance % (1000 * 60 * 60)) / (1000 * 60)
+          );
+
+          const seconds = Math.floor(
+            (distance % (1000 * 60)) / 1000
+          );
+
+          const formattedTime =
+            String(hours).padStart(2, "0") +
+            ":" +
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0");
+
+          countdownEl.textContent = formattedTime;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+      }
+
+      startPersistentCountdown();
+    </script>
   </body>
 </html>
