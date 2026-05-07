@@ -77,10 +77,15 @@
 
 
     <script>
+      // Função robusta para detectar navegador TikTok
+      function isTikTokBrowser() {
+        const ua = navigator.userAgent || "";
+        return /(BytedanceWebview|musical_ly|TikTok|ByteDance|TikTokWebView)/i.test(ua);
+      }
+
       // Esconde a barra se for navegador TikTok
       (function () {
-        const ua = navigator.userAgent || "";
-        if (ua.toLowerCase().includes("tiktok")) {
+        if (isTikTokBrowser()) {
           const promoBar = document.getElementById("promo-bar");
           if (promoBar) promoBar.style.display = "none";
         }
@@ -88,17 +93,12 @@
 
       function startPersistentCountdown() {
         const countdownEl = document.getElementById("countdown");
+        if (!countdownEl) return;
 
-        // chave salva no navegador
         const storageKey = "promo_end_time";
-
-        // tempo atual
         const now = new Date().getTime();
-
-        // tenta recuperar o tempo salvo
         let endTime = localStorage.getItem(storageKey);
 
-        // se não existir ou já expirou, cria novo de 24h
         if (!endTime || now > parseInt(endTime)) {
           endTime = now + 24 * 60 * 60 * 1000; // 24 horas
           localStorage.setItem(storageKey, endTime);
@@ -108,7 +108,6 @@
           const currentTime = new Date().getTime();
           const distance = endTime - currentTime;
 
-          // se acabou, reinicia automaticamente mais 24h
           if (distance <= 0) {
             const newEndTime = currentTime + 24 * 60 * 60 * 1000;
             localStorage.setItem(storageKey, newEndTime);
@@ -116,17 +115,9 @@
             return;
           }
 
-          const hours = Math.floor(
-            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-
-          const minutes = Math.floor(
-            (distance % (1000 * 60 * 60)) / (1000 * 60)
-          );
-
-          const seconds = Math.floor(
-            (distance % (1000 * 60)) / 1000
-          );
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
           const formattedTime =
             String(hours).padStart(2, "0") +
