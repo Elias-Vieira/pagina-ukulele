@@ -62,8 +62,8 @@
         });
       });
     </script>
-    <script type="module" crossorigin src="/assets/index-DVj6qPwt.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DeIX1hUk.css">
+    <script type="module" crossorigin src="/assets/index-B1s2J2sq.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BPbJ2cw2.css">
   </head>
 
   <body>
@@ -77,6 +77,15 @@
 
 
     <script>
+      // Esconde a barra se for navegador TikTok
+      (function () {
+        const ua = navigator.userAgent || "";
+        if (ua.toLowerCase().includes("tiktok")) {
+          const promoBar = document.getElementById("promo-bar");
+          if (promoBar) promoBar.style.display = "none";
+        }
+      })();
+
       function startPersistentCountdown() {
         const countdownEl = document.getElementById("countdown");
 
