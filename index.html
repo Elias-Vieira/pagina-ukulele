@@ -1,134 +1,222 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/manifest.json" />
-    <title>Violão Para Iniciantes</title>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="/manifest.json" />
 
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJQTWDNTWG"></script>
+  <title>Violão Para Iniciantes</title>
 
-    <script>
-      window.dataLayer = window.dataLayer || [];
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJQTWDNTWG"></script>
 
-      function gtag() {
-        dataLayer.push(arguments);
-      }
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-      gtag("js", new Date());
-      gtag("config", "G-TJQTWDNTWG");
+    function gtag() {
+      dataLayer.push(arguments);
+    }
 
-      // Captura e persiste UTMs da URL no localStorage
-      (function () {
-        var params = new URLSearchParams(window.location.search);
+    gtag("js", new Date());
+    gtag("config", "G-TJQTWDNTWG");
 
-        ["utm_source", "utm_medium", "utm_campaign"].forEach(function (k) {
-          var v = params.get(k);
-          if (v) localStorage.setItem(k, v);
-        });
-      })();
-    </script>
+    // Captura e salva UTM
+    (function () {
+      const params = new URLSearchParams(window.location.search);
 
-    <script>
-      window.addEventListener("load", function () {
-        document.addEventListener("click", function (e) {
-          const el = e.target.closest("a, button");
-          if (!el) return;
-
-          const link = el.href || "";
-          const texto = (el.innerText || "").toLowerCase();
-
-          if (
-            link.includes("pay.hotmart.com") ||
-            texto.includes("liberar meu acesso")
-          ) {
-            gtag("event", "click_compra", {
-              utm_source: localStorage.getItem("utm_source"),
-              utm_medium: localStorage.getItem("utm_medium"),
-              utm_campaign: localStorage.getItem("utm_campaign"),
-              checkout_url: link,
-              page_location: window.location.href,
-              page_title: document.title,
-            });
-
-            e.preventDefault();
-
-            setTimeout(function () {
-              window.location.href = link;
-            }, 300);
-          }
-        });
+      ["utm_source", "utm_medium", "utm_campaign"].forEach(function (key) {
+        const value = params.get(key);
+        if (value) {
+          localStorage.setItem(key, value);
+        }
       });
-    </script>
-    <script type="module" crossorigin src="/assets/index-B1s2J2sq.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BPbJ2cw2.css">
-  </head>
+    })();
+  </script>
 
-  <body>
-    <div id="root"></div>
+  <script>
+    window.addEventListener("load", function () {
+      document.addEventListener("click", function (e) {
+        const el = e.target.closest("a, button");
+        if (!el) return;
+
+        const link = el.href || "";
+        const texto = (el.innerText || "").toLowerCase();
+
+        if (
+          link.includes("pay.hotmart.com") ||
+          texto.includes("liberar meu acesso")
+        ) {
+          gtag("event", "click_compra", {
+            utm_source: localStorage.getItem("utm_source"),
+            utm_medium: localStorage.getItem("utm_medium"),
+            utm_campaign: localStorage.getItem("utm_campaign"),
+            checkout_url: link,
+            page_location: window.location.href,
+            page_title: document.title,
+          });
+
+          e.preventDefault();
+
+          setTimeout(function () {
+            window.location.href = link;
+          }, 300);
+        }
+      });
+    });
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    /* Barra promocional */
+    #promo-bar {
+      width: 100%;
+      background: #ff5a00;
+      color: white;
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 12px 10px;
+      line-height: 1.4;
+      position: relative;
+      z-index: 9999;
+    }
+
+    #countdown {
+      font-weight: 800;
+    }
+
+    /* Quando for navegador TikTok remove QUALQUER espaço */
+    body.tiktok-browser #promo-bar {
+      display: none !important;
+      height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    body.tiktok-browser {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    #root {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-B1s2J2sq.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BPbJ2cw2.css">
+</head>
+
+<body>
+  <div id="root"></div>
 
 
-    <script>
-      // Função robusta para detectar navegador TikTok
-      function isTikTokBrowser() {
-        const ua = navigator.userAgent || "";
-        return /(BytedanceWebview|musical_ly|TikTok|ByteDance|TikTokWebView)/i.test(ua);
+  <script>
+    // Detecta navegador interno do TikTok
+    function isTikTokBrowser() {
+      const ua = navigator.userAgent || "";
+
+      return (
+        /BytedanceWebView/i.test(ua) ||
+        /musical_ly/i.test(ua) ||
+        /TikTok/i.test(ua) ||
+        /ByteDance/i.test(ua) ||
+        /TikTokWebView/i.test(ua)
+      );
+    }
+
+    // Executa imediatamente
+    (function () {
+      const isTikTok = isTikTokBrowser();
+      //const isTikTok = true;
+
+      if (isTikTok) {
+        // adiciona classe no body para garantir zero espaço
+        document.body.classList.add("tiktok-browser");
+        return;
       }
 
-      // Só cria a barra se NÃO for TikTok
-      (function () {
-        if (!isTikTokBrowser()) {
-          const promoBar = document.createElement("div");
-          promoBar.id = "promo-bar";
-          promoBar.innerHTML = 'ÚLTIMAS HORAS: Essa oferta encerra em <span id="countdown">23:59:59</span>';
-          document.body.insertBefore(promoBar, document.getElementById("root"));
-          startPersistentCountdown();
-        }
-      })();
+      // Se NÃO for TikTok → cria barra normalmente
+      const promoBar = document.createElement("div");
+      promoBar.id = "promo-bar";
+      promoBar.innerHTML =
+        'ÚLTIMAS HORAS: Essa oferta encerra em <span id="countdown">23:59:59</span>';
 
-      function startPersistentCountdown() {
-        const countdownEl = document.getElementById("countdown");
-        if (!countdownEl) return;
+      document.body.insertBefore(
+        promoBar,
+        document.getElementById("root")
+      );
 
-        const storageKey = "promo_end_time";
-        const now = new Date().getTime();
-        let endTime = localStorage.getItem(storageKey);
+      startPersistentCountdown();
+    })();
 
-        if (!endTime || now > parseInt(endTime)) {
-          endTime = now + 24 * 60 * 60 * 1000; // 24 horas
-          localStorage.setItem(storageKey, endTime);
-        }
+    function startPersistentCountdown() {
+      const countdownEl = document.getElementById("countdown");
+      if (!countdownEl) return;
 
-        function updateCountdown() {
-          const currentTime = new Date().getTime();
-          const distance = endTime - currentTime;
+      const storageKey = "promo_end_time";
+      const now = new Date().getTime();
 
-          if (distance <= 0) {
-            const newEndTime = currentTime + 24 * 60 * 60 * 1000;
-            localStorage.setItem(storageKey, newEndTime);
-            endTime = newEndTime;
-            return;
-          }
+      let endTime = localStorage.getItem(storageKey);
 
-          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-          const formattedTime =
-            String(hours).padStart(2, "0") +
-            ":" +
-            String(minutes).padStart(2, "0") +
-            ":" +
-            String(seconds).padStart(2, "0");
-
-          countdownEl.textContent = formattedTime;
-        }
-
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
+      if (!endTime || now > parseInt(endTime)) {
+        endTime = now + 24 * 60 * 60 * 1000; // 24h
+        localStorage.setItem(storageKey, endTime);
       }
-    </script>
-  </body>
+
+      function updateCountdown() {
+        const currentTime = new Date().getTime();
+        const distance = endTime - currentTime;
+
+        if (distance <= 0) {
+          const newEndTime = currentTime + 24 * 60 * 60 * 1000;
+          localStorage.setItem(storageKey, newEndTime);
+          endTime = newEndTime;
+          return;
+        }
+
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) /
+          (1000 * 60 * 60)
+        );
+
+        const minutes = Math.floor(
+          (distance % (1000 * 60 * 60)) /
+          (1000 * 60)
+        );
+
+        const seconds = Math.floor(
+          (distance % (1000 * 60)) /
+          1000
+        );
+
+        countdownEl.textContent =
+          String(hours).padStart(2, "0") +
+          ":" +
+          String(minutes).padStart(2, "0") +
+          ":" +
+          String(seconds).padStart(2, "0");
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    }
+  </script>
+</body>
 </html>
