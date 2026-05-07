@@ -67,12 +67,6 @@
   </head>
 
   <body>
-    <!-- Barra de promoção -->
-    <div id="promo-bar">
-      ÚLTIMAS HORAS: Essa oferta encerra em
-      <span id="countdown">23:59:59</span>
-    </div>
-
     <div id="root"></div>
 
 
@@ -83,11 +77,14 @@
         return /(BytedanceWebview|musical_ly|TikTok|ByteDance|TikTokWebView)/i.test(ua);
       }
 
-      // Esconde a barra se for navegador TikTok
+      // Só cria a barra se NÃO for TikTok
       (function () {
-        if (isTikTokBrowser()) {
-          const promoBar = document.getElementById("promo-bar");
-          if (promoBar) promoBar.style.display = "none";
+        if (!isTikTokBrowser()) {
+          const promoBar = document.createElement("div");
+          promoBar.id = "promo-bar";
+          promoBar.innerHTML = 'ÚLTIMAS HORAS: Essa oferta encerra em <span id="countdown">23:59:59</span>';
+          document.body.insertBefore(promoBar, document.getElementById("root"));
+          startPersistentCountdown();
         }
       })();
 
@@ -132,8 +129,6 @@
         updateCountdown();
         setInterval(updateCountdown, 1000);
       }
-
-      startPersistentCountdown();
     </script>
   </body>
 </html>
