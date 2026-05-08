@@ -21,16 +21,68 @@
     gtag("js", new Date());
     gtag("config", "G-TJQTWDNTWG");
 
-    // Captura e salva UTM
+    // Detecta navegador interno do TikTok
+    function isTikTokBrowser() {
+      const ua = navigator.userAgent || "";
+
+      return (
+        /BytedanceWebView/i.test(ua) ||
+        /musical_ly/i.test(ua) ||
+        /TikTok/i.test(ua) ||
+        /ByteDance/i.test(ua) ||
+        /TikTokWebView/i.test(ua)
+      );
+    }
+
+    // Controle de UTM + Tutorial TikTok
     (function () {
+      const isTikTok = isTikTokBrowser();
+
+      // =========================
+      // ETAPA 1: Usuário no tutorial do TikTok
+      // =========================
+      if (isTikTok) {
+        localStorage.setItem("tutorial_source", "tutorialTikTok");
+        localStorage.setItem("tutorial_step", "entrou_no_tutorial");
+
+        // Mantém rastreio separado
+        gtag("event", "tutorial_tiktok_view", {
+          tutorial_source: "tutorialTikTok",
+          page_location: window.location.href,
+          page_title: document.title
+        });
+
+        return;
+      }
+
+      // =========================
+      // ETAPA 2: Usuário abriu no navegador real
+      // =========================
       const params = new URLSearchParams(window.location.search);
 
       ["utm_source", "utm_medium", "utm_campaign"].forEach(function (key) {
         const value = params.get(key);
+
         if (value) {
           localStorage.setItem(key, value);
         }
       });
+
+      // Se ele veio do tutorial e chegou no navegador real
+      const tutorialSource = localStorage.getItem("tutorial_source");
+
+      if (tutorialSource === "tutorialTikTok") {
+        localStorage.setItem("tutorial_step", "chegou_na_pagina_final");
+
+        gtag("event", "tutorial_to_browser_success", {
+          tutorial_source: tutorialSource,
+          utm_source: localStorage.getItem("utm_source"),
+          utm_medium: localStorage.getItem("utm_medium"),
+          utm_campaign: localStorage.getItem("utm_campaign"),
+          page_location: window.location.href,
+          page_title: document.title
+        });
+      }
     })();
   </script>
 
@@ -48,12 +100,16 @@
           texto.includes("liberar meu acesso")
         ) {
           gtag("event", "click_compra", {
+            tutorial_source: localStorage.getItem("tutorial_source"),
+            tutorial_step: localStorage.getItem("tutorial_step"),
+
             utm_source: localStorage.getItem("utm_source"),
             utm_medium: localStorage.getItem("utm_medium"),
             utm_campaign: localStorage.getItem("utm_campaign"),
+
             checkout_url: link,
             page_location: window.location.href,
-            page_title: document.title,
+            page_title: document.title
           });
 
           e.preventDefault();
@@ -119,8 +175,8 @@
       padding: 0;
     }
   </style>
-  <script type="module" crossorigin src="/assets/index-eEoOFV-N.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-BPbJ2cw2.css">
+  <script type="module" crossorigin src="/assets/index-Tt7wCJfL.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-5SxVHm3_.css">
 </head>
 
 <body>
@@ -128,26 +184,12 @@
 
 
   <script>
-    // Detecta navegador interno do TikTok
-    function isTikTokBrowser() {
-      const ua = navigator.userAgent || "";
-
-      return (
-        /BytedanceWebView/i.test(ua) ||
-        /musical_ly/i.test(ua) ||
-        /TikTok/i.test(ua) ||
-        /ByteDance/i.test(ua) ||
-        /TikTokWebView/i.test(ua)
-      );
-    }
-
     // Executa imediatamente
     (function () {
       const isTikTok = isTikTokBrowser();
-      //const isTikTok = true;
+      // const isTikTok = true;
 
       if (isTikTok) {
-        // adiciona classe no body para garantir zero espaço
         document.body.classList.add("tiktok-browser");
         return;
       }
@@ -176,7 +218,7 @@
       let endTime = localStorage.getItem(storageKey);
 
       if (!endTime || now > parseInt(endTime)) {
-        endTime = now + 24 * 60 * 60 * 1000; // 24h
+        endTime = now + 24 * 60 * 60 * 1000;
         localStorage.setItem(storageKey, endTime);
       }
 
