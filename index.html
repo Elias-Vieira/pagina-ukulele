@@ -21,7 +21,6 @@
     gtag("js", new Date());
     gtag("config", "G-TJQTWDNTWG");
 
-    // Detecta navegador interno do TikTok
     function isTikTokBrowser() {
       const ua = navigator.userAgent || "";
 
@@ -34,53 +33,85 @@
       );
     }
 
-    // Controle de UTM + Tutorial TikTok
-    (function () {
-      const isTikTok = isTikTokBrowser();
+    function isYouTubeBrowser() {
+      const ua = navigator.userAgent || "";
+      return /YouTube/i.test(ua);
+    }
 
-      // =========================
-      // ETAPA 1: Usuário no tutorial do TikTok
-      // =========================
-      if (isTikTok) {
-        localStorage.setItem("tutorial_source", "tutorialTikTok");
-        localStorage.setItem("tutorial_step", "entrou_no_tutorial");
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
 
-        // Mantém rastreio separado
-        gtag("event", "tutorial_tiktok_view", {
-          tutorial_source: "tutorialTikTok",
-          page_location: window.location.href,
-          page_title: document.title
-        });
-
-        return;
-      }
-
-      // =========================
-      // ETAPA 2: Usuário abriu no navegador real
-      // =========================
-      const params = new URLSearchParams(window.location.search);
-
+    function saveUTMs() {
       ["utm_source", "utm_medium", "utm_campaign"].forEach(function (key) {
-        const value = params.get(key);
-
+        const value = getParam(key);
         if (value) {
           localStorage.setItem(key, value);
         }
       });
+    }
 
-      // Se ele veio do tutorial e chegou no navegador real
-      const tutorialSource = localStorage.getItem("tutorial_source");
+    function getTrackingData() {
+      return {
+        utm_source: getParam("utm_source") || localStorage.getItem("utm_source") || "",
+        utm_medium: getParam("utm_medium") || localStorage.getItem("utm_medium") || "",
+        utm_campaign: getParam("utm_campaign") || localStorage.getItem("utm_campaign") || "",
+        page_location: window.location.href,
+        page_title: document.title
+      };
+    }
 
-      if (tutorialSource === "tutorialTikTok") {
+    function sendEventOnce(eventName, params) {
+      const key = "ga4_" + eventName + "_" + window.location.href;
+
+      if (sessionStorage.getItem(key)) {
+        return;
+      }
+
+      sessionStorage.setItem(key, "true");
+      gtag("event", eventName, params);
+    }
+
+    (function () {
+      saveUTMs();
+
+      const isTikTok = isTikTokBrowser();
+      const isYouTube = isYouTubeBrowser();
+      const data = getTrackingData();
+
+      if (data.utm_source === "tiktok") {
+        sendEventOnce("tiktok_page_view", {
+          ...data,
+          navegador_interno_tiktok: isTikTok ? "sim" : "nao"
+        });
+      }
+
+      if (data.utm_source === "youtube") {
+        sendEventOnce("youtube_page_view", {
+          ...data,
+          navegador_interno_youtube: isYouTube ? "sim" : "nao"
+        });
+      }
+
+      if (isTikTok && data.utm_source === "tiktok") {
+        localStorage.setItem("tutorial_source", "tutorialTikTok");
+        localStorage.setItem("tutorial_step", "entrou_no_tutorial");
+
+        sendEventOnce("tutorial_tiktok_view", {
+          ...data,
+          tutorial_source: "tutorialTikTok",
+          tutorial_step: "entrou_no_tutorial"
+        });
+      }
+
+      if (!isTikTok && data.utm_source === "tiktok") {
+        localStorage.setItem("tutorial_source", "tutorialTikTok");
         localStorage.setItem("tutorial_step", "chegou_na_pagina_final");
 
-        gtag("event", "tutorial_to_browser_success", {
-          tutorial_source: tutorialSource,
-          utm_source: localStorage.getItem("utm_source"),
-          utm_medium: localStorage.getItem("utm_medium"),
-          utm_campaign: localStorage.getItem("utm_campaign"),
-          page_location: window.location.href,
-          page_title: document.title
+        sendEventOnce("tutorial_to_browser_success", {
+          ...data,
+          tutorial_source: "tutorialTikTok",
+          tutorial_step: "chegou_na_pagina_final"
         });
       }
     })();
@@ -88,6 +119,8 @@
 
   <script>
     window.addEventListener("load", function () {
+      let compraEnviada = false;
+
       document.addEventListener("click", function (e) {
         const el = e.target.closest("a, button");
         if (!el) return;
@@ -99,13 +132,16 @@
           link.includes("pay.hotmart.com") ||
           texto.includes("liberar meu acesso")
         ) {
-          gtag("event", "click_compra", {
-            tutorial_source: localStorage.getItem("tutorial_source"),
-            tutorial_step: localStorage.getItem("tutorial_step"),
+          if (compraEnviada) return;
+          compraEnviada = true;
 
-            utm_source: localStorage.getItem("utm_source"),
-            utm_medium: localStorage.getItem("utm_medium"),
-            utm_campaign: localStorage.getItem("utm_campaign"),
+          gtag("event", "click_compra", {
+            utm_source: localStorage.getItem("utm_source") || "",
+            utm_medium: localStorage.getItem("utm_medium") || "",
+            utm_campaign: localStorage.getItem("utm_campaign") || "",
+
+            tutorial_source: localStorage.getItem("tutorial_source") || "",
+            tutorial_step: localStorage.getItem("tutorial_step") || "",
 
             checkout_url: link,
             page_location: window.location.href,
@@ -139,7 +175,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Barra promocional */
     #promo-bar {
       width: 100%;
       background: #ff5a00;
@@ -157,7 +192,6 @@
       font-weight: 800;
     }
 
-    /* Quando for navegador TikTok remove QUALQUER espaço */
     body.tiktok-browser #promo-bar {
       display: none !important;
       height: 0 !important;
@@ -184,17 +218,14 @@
 
 
   <script>
-    // Executa imediatamente
     (function () {
       const isTikTok = isTikTokBrowser();
-      // const isTikTok = true;
 
       if (isTikTok) {
         document.body.classList.add("tiktok-browser");
         return;
       }
 
-      // Se NÃO for TikTok → cria barra normalmente
       const promoBar = document.createElement("div");
       promoBar.id = "promo-bar";
       promoBar.innerHTML =
