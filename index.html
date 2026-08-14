@@ -43,8 +43,19 @@
     }
 
     function saveUTMs() {
-      ["utm_source", "utm_medium", "utm_campaign"].forEach(function (key) {
+      [
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_content",
+        "utm_term",
+        "sck",
+        "ttclid",
+        "fbclid",
+        "gclid"
+      ].forEach(function (key) {
         const value = getParam(key);
+
         if (value) {
           localStorage.setItem(key, value);
         }
@@ -53,9 +64,51 @@
 
     function getTrackingData() {
       return {
-        utm_source: getParam("utm_source") || localStorage.getItem("utm_source") || "",
-        utm_medium: getParam("utm_medium") || localStorage.getItem("utm_medium") || "",
-        utm_campaign: getParam("utm_campaign") || localStorage.getItem("utm_campaign") || "",
+        utm_source:
+          getParam("utm_source") ||
+          localStorage.getItem("utm_source") ||
+          "",
+
+        utm_medium:
+          getParam("utm_medium") ||
+          localStorage.getItem("utm_medium") ||
+          "",
+
+        utm_campaign:
+          getParam("utm_campaign") ||
+          localStorage.getItem("utm_campaign") ||
+          "",
+
+        utm_content:
+          getParam("utm_content") ||
+          localStorage.getItem("utm_content") ||
+          "",
+
+        utm_term:
+          getParam("utm_term") ||
+          localStorage.getItem("utm_term") ||
+          "",
+
+        sck:
+          getParam("sck") ||
+          localStorage.getItem("sck") ||
+          "",
+
+        ttclid:
+          getParam("ttclid") ||
+          localStorage.getItem("ttclid") ||
+          "",
+
+        fbclid:
+          getParam("fbclid") ||
+          localStorage.getItem("fbclid") ||
+          "",
+
+        gclid:
+          getParam("gclid") ||
+          localStorage.getItem("gclid") ||
+          "",
+
         page_location: window.location.href,
         page_title: document.title
       };
@@ -117,47 +170,6 @@
     })();
   </script>
 
-  <script>
-    window.addEventListener("load", function () {
-      let compraEnviada = false;
-
-      document.addEventListener("click", function (e) {
-        const el = e.target.closest("a, button");
-        if (!el) return;
-
-        const link = el.href || "";
-        const texto = (el.innerText || "").toLowerCase();
-
-        if (
-          link.includes("pay.hotmart.com") ||
-          texto.includes("liberar meu acesso")
-        ) {
-          if (compraEnviada) return;
-          compraEnviada = true;
-
-          gtag("event", "click_compra", {
-            utm_source: localStorage.getItem("utm_source") || "",
-            utm_medium: localStorage.getItem("utm_medium") || "",
-            utm_campaign: localStorage.getItem("utm_campaign") || "",
-
-            tutorial_source: localStorage.getItem("tutorial_source") || "",
-            tutorial_step: localStorage.getItem("tutorial_step") || "",
-
-            checkout_url: link,
-            page_location: window.location.href,
-            page_title: document.title
-          });
-
-          e.preventDefault();
-
-          setTimeout(function () {
-            window.location.href = link;
-          }, 300);
-        }
-      });
-    });
-  </script>
-
   <style>
     * {
       margin: 0;
@@ -209,7 +221,7 @@
       padding: 0;
     }
   </style>
-  <script type="module" crossorigin src="/assets/index-OWCka-Ov.js"></script>
+  <script type="module" crossorigin src="/assets/index-D6lvUrjB.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-COF7GyXH.css">
 </head>
 
