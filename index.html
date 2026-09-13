@@ -6,43 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="/manifest.json" />
 
-  <title>Violão Para Iniciantes</title>
+  <title>Curso de Ritmos de Ukulele - Domine as Batidas Mais Usadas</title>
 
-  <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJQTWDNTWG"></script>
-
+  <!-- Armazenamento de parâmetros UTM para o checkout -->
   <script>
-    window.dataLayer = window.dataLayer || [];
+    (function () {
+      function getParam(name) {
+        return new URLSearchParams(window.location.search).get(name);
+      }
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-
-    gtag("js", new Date());
-    gtag("config", "G-TJQTWDNTWG");
-
-    function isTikTokBrowser() {
-      const ua = navigator.userAgent || "";
-
-      return (
-        /BytedanceWebView/i.test(ua) ||
-        /musical_ly/i.test(ua) ||
-        /TikTok/i.test(ua) ||
-        /ByteDance/i.test(ua) ||
-        /TikTokWebView/i.test(ua)
-      );
-    }
-
-    function isYouTubeBrowser() {
-      const ua = navigator.userAgent || "";
-      return /YouTube/i.test(ua);
-    }
-
-    function getParam(name) {
-      return new URLSearchParams(window.location.search).get(name);
-    }
-
-    function saveUTMs() {
       [
         "utm_source",
         "utm_medium",
@@ -54,119 +26,11 @@
         "fbclid",
         "gclid"
       ].forEach(function (key) {
-        const value = getParam(key);
-
+        var value = getParam(key);
         if (value) {
           localStorage.setItem(key, value);
         }
       });
-    }
-
-    function getTrackingData() {
-      return {
-        utm_source:
-          getParam("utm_source") ||
-          localStorage.getItem("utm_source") ||
-          "",
-
-        utm_medium:
-          getParam("utm_medium") ||
-          localStorage.getItem("utm_medium") ||
-          "",
-
-        utm_campaign:
-          getParam("utm_campaign") ||
-          localStorage.getItem("utm_campaign") ||
-          "",
-
-        utm_content:
-          getParam("utm_content") ||
-          localStorage.getItem("utm_content") ||
-          "",
-
-        utm_term:
-          getParam("utm_term") ||
-          localStorage.getItem("utm_term") ||
-          "",
-
-        sck:
-          getParam("sck") ||
-          localStorage.getItem("sck") ||
-          "",
-
-        ttclid:
-          getParam("ttclid") ||
-          localStorage.getItem("ttclid") ||
-          "",
-
-        fbclid:
-          getParam("fbclid") ||
-          localStorage.getItem("fbclid") ||
-          "",
-
-        gclid:
-          getParam("gclid") ||
-          localStorage.getItem("gclid") ||
-          "",
-
-        page_location: window.location.href,
-        page_title: document.title
-      };
-    }
-
-    function sendEventOnce(eventName, params) {
-      const key = "ga4_" + eventName + "_" + window.location.href;
-
-      if (sessionStorage.getItem(key)) {
-        return;
-      }
-
-      sessionStorage.setItem(key, "true");
-      gtag("event", eventName, params);
-    }
-
-    (function () {
-      saveUTMs();
-
-      const isTikTok = isTikTokBrowser();
-      const isYouTube = isYouTubeBrowser();
-      const data = getTrackingData();
-
-      if (data.utm_source === "tiktok") {
-        sendEventOnce("tiktok_page_view", {
-          ...data,
-          navegador_interno_tiktok: isTikTok ? "sim" : "nao"
-        });
-      }
-
-      if (data.utm_source === "youtube") {
-        sendEventOnce("youtube_page_view", {
-          ...data,
-          navegador_interno_youtube: isYouTube ? "sim" : "nao"
-        });
-      }
-
-      if (isTikTok && data.utm_source === "tiktok") {
-        localStorage.setItem("tutorial_source", "tutorialTikTok");
-        localStorage.setItem("tutorial_step", "entrou_no_tutorial");
-
-        sendEventOnce("tutorial_tiktok_view", {
-          ...data,
-          tutorial_source: "tutorialTikTok",
-          tutorial_step: "entrou_no_tutorial"
-        });
-      }
-
-      if (!isTikTok && data.utm_source === "tiktok") {
-        localStorage.setItem("tutorial_source", "tutorialTikTok");
-        localStorage.setItem("tutorial_step", "chegou_na_pagina_final");
-
-        sendEventOnce("tutorial_to_browser_success", {
-          ...data,
-          tutorial_source: "tutorialTikTok",
-          tutorial_step: "chegou_na_pagina_final"
-        });
-      }
     })();
   </script>
 
@@ -204,25 +68,13 @@
       font-weight: 800;
     }
 
-    body.tiktok-browser #promo-bar {
-      display: none !important;
-      height: 0 !important;
-      padding: 0 !important;
-      margin: 0 !important;
-    }
-
-    body.tiktok-browser {
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-
     #root {
       margin: 0;
       padding: 0;
     }
   </style>
-  <script type="module" crossorigin src="/assets/index-D6lvUrjB.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-COF7GyXH.css">
+  <script type="module" crossorigin src="/assets/index-BFf7Bhb2.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-L-WWUEqH.css">
 </head>
 
 <body>
@@ -231,13 +83,6 @@
 
   <script>
     (function () {
-      const isTikTok = isTikTokBrowser();
-
-      if (isTikTok) {
-        document.body.classList.add("tiktok-browser");
-        return;
-      }
-
       const promoBar = document.createElement("div");
       promoBar.id = "promo-bar";
       promoBar.innerHTML =
